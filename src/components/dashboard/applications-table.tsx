@@ -13,7 +13,8 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Pencil, Trash2, ExternalLink } from 'lucide-react'
-
+import EditJobDialog from './edit-job-dialog'
+import DeleteJobDialog from './delete-job-dialog'
 
 const statusColors = {
   WISHLIST: 'bg-gray-100 text-gray-800',
@@ -103,7 +104,23 @@ export default function ApplicationsTable({ applications }: { applications: any[
         </Table>
       </div>
 
-      
+      {/* Edit Dialog */}
+      {editingJob && (
+        <EditJobDialog
+          job={editingJob}
+          open={!!editingJob}
+          onOpenChange={(open) => !open && setEditingJob(null)}
+        />
+      )}
+
+      {/* Delete Dialog */}
+      {deletingJobId && (
+        <DeleteJobDialog
+          jobId={deletingJobId}
+          open={!!deletingJobId}
+          onOpenChange={(open) => !open && setDeletingJobId(null)}
+        />
+      )}
     </>
   )
 }
