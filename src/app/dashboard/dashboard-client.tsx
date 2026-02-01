@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Plus, LogOut, Briefcase, Clock, CheckCircle, XCircle } from 'lucide-react'
 import AddJobDialog from '@/components/dashboard/add-job-dialog'
 import ApplicationsTable from '@/components/dashboard/applications-table'
+import Link from 'next/link'
 
 interface DashboardClientProps {
   user: {
@@ -34,10 +35,15 @@ export default function DashboardClient({ user, applications, stats }: Dashboard
       <nav className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <Briefcase className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Job Tracker AI</h1>
-            </div>
+           <div className="flex items-center space-x-3">
+  <Briefcase className="h-8 w-8 text-blue-600" />
+  <h1 className="text-2xl font-bold text-gray-900">Job Tracker AI</h1>
+  <Link href="/dashboard/analytics">
+    <Button variant="outline" size="sm">
+      📊 Analytics
+    </Button>
+  </Link>
+</div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
                 Welcome, <span className="font-semibold">{user.name || user.email}</span>
