@@ -16,6 +16,7 @@ import {
 import AddJobDialog from "@/components/dashboard/add-job-dialog";
 import ApplicationsTable from "@/components/dashboard/applications-table";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface DashboardClientProps {
   user: {
@@ -41,37 +42,51 @@ export default function DashboardClient({
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Navigation Bar */}
-      <nav className="bg-white border-b">
+      <nav className="bg-white dark:bg-gray-900 border-b dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-  <Briefcase className="h-8 w-8 text-blue-600" />
-  <h1 className="text-2xl font-bold text-gray-900">Job Tracker AI</h1>
-  <Link href="/dashboard/analytics">
-    <Button variant="outline" size="sm">
-      📊 Analytics
-    </Button>
-  </Link>
-  <Link href="/dashboard/ai-tools">
-    <Button variant="outline" size="sm">
-      🤖 AI Tools
-    </Button>
-  </Link>
-</div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                Welcome,{" "}
-                <span className="font-semibold">{user.name || user.email}</span>
-              </span>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:h-16 gap-4 sm:gap-0">
+            {/* Left side - Logo and Links */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <div className="flex items-center space-x-3">
+                <Briefcase className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Job Tracker AI
+                </h1>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <Link href="/dashboard/analytics">
+                  <Button variant="outline" size="sm">
+                    📊 Analytics
+                  </Button>
+                </Link>
+                <Link href="/dashboard/ai-tools">
+                  <Button variant="outline" size="sm">
+                    🤖 AI Tools
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right side - User info and actions */}
+            <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+              <div className="flex items-center gap-3">
+                <ThemeToggle />
+                <span className="text-sm text-gray-600 dark:text-gray-300 hidden md:block">
+                  Welcome,{" "}
+                  <span className="font-semibold">
+                    {user.name || user.email}
+                  </span>
+                </span>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => signOut({ callbackUrl: "/" })}
               >
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
+                <LogOut className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
