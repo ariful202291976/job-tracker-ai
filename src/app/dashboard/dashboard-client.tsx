@@ -17,6 +17,8 @@ import AddJobDialog from "@/components/dashboard/add-job-dialog";
 import ApplicationsTable from "@/components/dashboard/applications-table";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Download, FileText, FileSpreadsheet } from "lucide-react";
+import { exportToPDF, exportToExcel } from "@/lib/export";
 
 interface DashboardClientProps {
   user: {
@@ -155,17 +157,39 @@ export default function DashboardClient({
         {/* Applications Section */}
         <Card>
           <CardHeader>
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <CardTitle>Job Applications</CardTitle>
                 <p className="text-sm text-muted-foreground mt-1">
                   Manage and track all your job applications
                 </p>
+              </div>  
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    exportToPDF(applications, user.name || user.email)
+                  }
+                  disabled={applications.length === 0}
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export PDF
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => exportToExcel(applications)}
+                  disabled={applications.length === 0}
+                >
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Export Excel
+                </Button>
+                <Button onClick={() => setIsAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Job
+                </Button>
               </div>
-              <Button onClick={() => setIsAddDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Job
-              </Button>
             </div>
           </CardHeader>
           <CardContent>
