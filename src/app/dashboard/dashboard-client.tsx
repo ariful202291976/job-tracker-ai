@@ -1,33 +1,44 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { signOut } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Plus, LogOut, Briefcase, Clock, CheckCircle, XCircle } from 'lucide-react'
-import AddJobDialog from '@/components/dashboard/add-job-dialog'
-import ApplicationsTable from '@/components/dashboard/applications-table'
-import Link from 'next/link'
+import { useState } from "react";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Plus,
+  LogOut,
+  Briefcase,
+  Clock,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
+import AddJobDialog from "@/components/dashboard/add-job-dialog";
+import ApplicationsTable from "@/components/dashboard/applications-table";
+import Link from "next/link";
 
 interface DashboardClientProps {
   user: {
-    id: string
-    email: string
-    name?: string | null
-  }
-  applications: any[]
+    id: string;
+    email: string;
+    name?: string | null;
+  };
+  applications: any[];
   stats: {
-    total: number
-    applied: number
-    interviewing: number
-    offers: number
-    rejected: number
-  }
+    total: number;
+    applied: number;
+    interviewing: number;
+    offers: number;
+    rejected: number;
+  };
 }
 
-export default function DashboardClient({ user, applications, stats }: DashboardClientProps) {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+export default function DashboardClient({
+  user,
+  applications,
+  stats,
+}: DashboardClientProps) {
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -35,7 +46,7 @@ export default function DashboardClient({ user, applications, stats }: Dashboard
       <nav className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-           <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3">
   <Briefcase className="h-8 w-8 text-blue-600" />
   <h1 className="text-2xl font-bold text-gray-900">Job Tracker AI</h1>
   <Link href="/dashboard/analytics">
@@ -43,15 +54,21 @@ export default function DashboardClient({ user, applications, stats }: Dashboard
       📊 Analytics
     </Button>
   </Link>
+  <Link href="/dashboard/ai-tools">
+    <Button variant="outline" size="sm">
+      🤖 AI Tools
+    </Button>
+  </Link>
 </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                Welcome, <span className="font-semibold">{user.name || user.email}</span>
+                Welcome,{" "}
+                <span className="font-semibold">{user.name || user.email}</span>
               </span>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
-                onClick={() => signOut({ callbackUrl: '/' })}
+                onClick={() => signOut({ callbackUrl: "/" })}
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
@@ -68,7 +85,9 @@ export default function DashboardClient({ user, applications, stats }: Dashboard
           {/* Total Applications */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Applications
+              </CardTitle>
               <Briefcase className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -85,14 +104,18 @@ export default function DashboardClient({ user, applications, stats }: Dashboard
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.applied}</div>
-              <p className="text-xs text-muted-foreground">Waiting for response</p>
+              <p className="text-xs text-muted-foreground">
+                Waiting for response
+              </p>
             </CardContent>
           </Card>
 
           {/* Interviewing */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Interviewing</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Interviewing
+              </CardTitle>
               <Clock className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
@@ -137,10 +160,7 @@ export default function DashboardClient({ user, applications, stats }: Dashboard
       </main>
 
       {/* Add Job Dialog */}
-      <AddJobDialog 
-        open={isAddDialogOpen} 
-        onOpenChange={setIsAddDialogOpen}
-      />
+      <AddJobDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
     </div>
-  )
+  );
 }
