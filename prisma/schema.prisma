@@ -73,11 +73,12 @@ model JobApplication {
   // Application Details
   status       Status   @default(APPLIED)
   appliedDate  DateTime @default(now())
-  source       String?  // LinkedIn, Indeed, Company Website, etc.
+  source       String?
   
   // Tracking
   notes        String?  @db.Text
   resumeUsed   String?
+  resumeUrl    String?  // ← ADD THIS LINE
   coverLetter  String?  @db.Text
   
   // Follow-up
