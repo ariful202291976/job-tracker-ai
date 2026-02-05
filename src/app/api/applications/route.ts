@@ -47,6 +47,7 @@ export async function POST(request: Request) {
       status,
       source,
       notes,
+      resumeUrl,
     } = body
 
     if (!company || !position) {
@@ -54,18 +55,19 @@ export async function POST(request: Request) {
     }
 
     const application = await prisma.jobApplication.create({
-      data: {
-        userId: session.user.id,
-        company,
-        position,
-        location: location || null,
-        jobUrl: jobUrl || null,
-        salary: salary || null,
-        status: status || 'APPLIED',
-        source: source || null,
-        notes: notes || null,
-      },
-    })
+  data: {
+    userId: session.user.id,
+    company,
+    position,
+    location: location || null,
+    jobUrl: jobUrl || null,
+    salary: salary || null,
+    status: status || 'APPLIED',
+    source: source || null,
+    notes: notes || null,
+    resumeUrl: body.resumeUrl || null,
+  },
+})
 
     return NextResponse.json(application)
   } catch (error) {

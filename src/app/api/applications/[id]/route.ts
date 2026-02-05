@@ -57,6 +57,7 @@ export async function PUT(
       status,
       source,
       notes,
+      resumeUrl,
     } = body
 
     // Verify ownership
@@ -84,6 +85,7 @@ export async function PUT(
         status,
         source: source || null,
         notes: notes || null,
+        resumeUrl: resumeUrl || null,
       },
     })
 

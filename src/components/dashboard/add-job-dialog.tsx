@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -10,82 +10,124 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 
 interface AddJobDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
+export default function AddJobDialog({
+  open,
+  onOpenChange,
+}: AddJobDialogProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    company: '',
-    position: '',
-    location: '',
-    jobUrl: '',
-    salary: '',
-    status: 'APPLIED',
-    source: '',
-    notes: '',
-  })
+    company: "",
+    position: "",
+    location: "",
+    jobUrl: "",
+    salary: "",
+    status: "APPLIED",
+    source: "",
+    notes: "",
+  });
+  const [isUploading, setIsUploading] = useState(false);
+  const [resumeUrl, setResumeUrl] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
+    setIsUploading(true);
     try {
-      const response = await fetch('/api/applications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to create application')
+        const error = await response.text();
+        throw new Error(error);
+      }
+
+      const data = await response.json();
+      setResumeUrl(data.url);
+      toast.success("Resume uploaded successfully!");
+    } catch (error: any) {
+      toast.error("Failed to upload resume", {
+        description: error.message || "Please try again",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          resumeUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create application");
       }
 
       // Reset form
       setFormData({
-        company: '',
-        position: '',
-        location: '',
-        jobUrl: '',
-        salary: '',
-        status: 'APPLIED',
-        source: '',
-        notes: '',
-      })
+        company: "",
+        position: "",
+        location: "",
+        jobUrl: "",
+        salary: "",
+        status: "APPLIED",
+        source: "",
+        notes: "",
+      });
+      setResumeUrl("");
 
-      toast.success('Application added successfully!', {
+      toast.success("Application added successfully!", {
         description: `${formData.position} at ${formData.company}`,
-      })
+      });
 
-      onOpenChange(false)
-      router.refresh()
+      onOpenChange(false);
+      router.refresh();
     } catch (error) {
-      console.error('Error creating application:', error)
-      toast.error('Failed to add application', {
-        description: 'Please try again or contact support if the problem persists.',
-      })
+      console.error("Error creating application:", error);
+      toast.error("Failed to add application", {
+        description:
+          "Please try again or contact support if the problem persists.",
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -105,7 +147,9 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
                   id="company"
                   required
                   value={formData.company}
-                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, company: e.target.value })
+                  }
                   placeholder="Google"
                 />
               </div>
@@ -115,7 +159,9 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
                   id="position"
                   required
                   value={formData.position}
-                  onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, position: e.target.value })
+                  }
                   placeholder="Software Engineer"
                 />
               </div>
@@ -127,7 +173,9 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
                 <Input
                   id="location"
                   value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, location: e.target.value })
+                  }
                   placeholder="San Francisco, CA"
                 />
               </div>
@@ -136,7 +184,9 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
                 <Input
                   id="salary"
                   value={formData.salary}
-                  onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, salary: e.target.value })
+                  }
                   placeholder="$120k - $150k"
                 />
               </div>
@@ -147,7 +197,9 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
                 <Label htmlFor="status">Status</Label>
                 <Select
                   value={formData.status}
-                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, status: value })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -168,7 +220,9 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
                 <Input
                   id="source"
                   value={formData.source}
-                  onChange={(e) => setFormData({ ...formData, source: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, source: e.target.value })
+                  }
                   placeholder="LinkedIn, Indeed, etc."
                 />
               </div>
@@ -180,9 +234,28 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
                 id="jobUrl"
                 type="url"
                 value={formData.jobUrl}
-                onChange={(e) => setFormData({ ...formData, jobUrl: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, jobUrl: e.target.value })
+                }
                 placeholder="https://..."
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="resume">Upload Resume (Optional)</Label>
+              <Input
+                id="resume"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileUpload}
+                disabled={isUploading}
+              />
+              {isUploading && (
+                <p className="text-xs text-blue-600">Uploading...</p>
+              )}
+              {resumeUrl && (
+                <p className="text-xs text-green-600">✓ Resume uploaded</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -190,22 +263,28 @@ export default function AddJobDialog({ open, onOpenChange }: AddJobDialogProps) 
               <Textarea
                 id="notes"
                 value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, notes: e.target.value })
+                }
                 placeholder="Additional notes about this application..."
                 rows={3}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Adding...' : 'Add Application'}
+              {isLoading ? "Adding..." : "Add Application"}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

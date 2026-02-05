@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useState, useMemo } from 'react'
-import { format } from 'date-fns'
+import { useState, useMemo } from "react";
+import { format } from "date-fns";
 import {
   Table,
   TableBody,
@@ -9,41 +9,45 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Pencil, Trash2, ExternalLink, Search } from 'lucide-react'
-import EditJobDialog from './edit-job-dialog'
-import DeleteJobDialog from './delete-job-dialog'
+} from "@/components/ui/select";
+import { Pencil, Trash2, ExternalLink, Search } from "lucide-react";
+import EditJobDialog from "./edit-job-dialog";
+import DeleteJobDialog from "./delete-job-dialog";
 
 const statusColors = {
-  WISHLIST: 'bg-gray-100 text-gray-800',
-  APPLIED: 'bg-yellow-100 text-yellow-800',
-  INTERVIEWING: 'bg-blue-100 text-blue-800',
-  OFFER: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-red-100 text-red-800',
-  ACCEPTED: 'bg-purple-100 text-purple-800',
-  WITHDRAWN: 'bg-gray-100 text-gray-800',
-}
+  WISHLIST: "bg-gray-100 text-gray-800",
+  APPLIED: "bg-yellow-100 text-yellow-800",
+  INTERVIEWING: "bg-blue-100 text-blue-800",
+  OFFER: "bg-green-100 text-green-800",
+  REJECTED: "bg-red-100 text-red-800",
+  ACCEPTED: "bg-purple-100 text-purple-800",
+  WITHDRAWN: "bg-gray-100 text-gray-800",
+};
 
-export default function ApplicationsTable({ applications }: { applications: any[] }) {
-  const [editingJob, setEditingJob] = useState<any>(null)
-  const [deletingJobId, setDeletingJobId] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('ALL')
-  const [sortBy, setSortBy] = useState<'date' | 'company'>('date')
+export default function ApplicationsTable({
+  applications,
+}: {
+  applications: any[];
+}) {
+  const [editingJob, setEditingJob] = useState<any>(null);
+  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [sortBy, setSortBy] = useState<"date" | "company">("date");
 
   // Filter and search logic
   const filteredApplications = useMemo(() => {
-    let filtered = [...applications]
+    let filtered = [...applications];
 
     // Search filter
     if (searchQuery) {
@@ -51,24 +55,27 @@ export default function ApplicationsTable({ applications }: { applications: any[
         (app) =>
           app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
           app.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          app.location?.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+          app.location?.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     }
 
     // Status filter
-    if (statusFilter !== 'ALL') {
-      filtered = filtered.filter((app) => app.status === statusFilter)
+    if (statusFilter !== "ALL") {
+      filtered = filtered.filter((app) => app.status === statusFilter);
     }
 
     // Sort
-    if (sortBy === 'date') {
-      filtered.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime())
+    if (sortBy === "date") {
+      filtered.sort(
+        (a, b) =>
+          new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime(),
+      );
     } else {
-      filtered.sort((a, b) => a.company.localeCompare(b.company))
+      filtered.sort((a, b) => a.company.localeCompare(b.company));
     }
 
-    return filtered
-  }, [applications, searchQuery, statusFilter, sortBy])
+    return filtered;
+  }, [applications, searchQuery, statusFilter, sortBy]);
 
   if (applications.length === 0) {
     return (
@@ -78,7 +85,7 @@ export default function ApplicationsTable({ applications }: { applications: any[
           Click "Add New Job" to start tracking your applications
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -110,7 +117,10 @@ export default function ApplicationsTable({ applications }: { applications: any[
               <SelectItem value="WITHDRAWN">Withdrawn</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={sortBy} onValueChange={(value: 'date' | 'company') => setSortBy(value)}>
+          <Select
+            value={sortBy}
+            onValueChange={(value: "date" | "company") => setSortBy(value)}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -124,14 +134,17 @@ export default function ApplicationsTable({ applications }: { applications: any[
 
       {/* Results count */}
       <div className="mb-4 text-sm text-gray-600">
-        Showing {filteredApplications.length} of {applications.length} applications
+        Showing {filteredApplications.length} of {applications.length}{" "}
+        applications
       </div>
 
       {/* Table */}
       {filteredApplications.length === 0 ? (
         <div className="text-center py-12 border rounded-md">
           <p className="text-gray-500">No applications match your search</p>
-          <p className="text-gray-400 text-sm mt-2">Try adjusting your filters</p>
+          <p className="text-gray-400 text-sm mt-2">
+            Try adjusting your filters
+          </p>
         </div>
       ) : (
         <div className="rounded-md border">
@@ -144,7 +157,8 @@ export default function ApplicationsTable({ applications }: { applications: any[
                 <TableHead>Status</TableHead>
                 <TableHead>Applied Date</TableHead>
                 <TableHead>Source</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Resume</TableHead>
+                <TableHead className="">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -152,23 +166,41 @@ export default function ApplicationsTable({ applications }: { applications: any[
                 <TableRow key={app.id}>
                   <TableCell className="font-medium">{app.company}</TableCell>
                   <TableCell>{app.position}</TableCell>
-                  <TableCell>{app.location || 'N/A'}</TableCell>
+                  <TableCell>{app.location || "N/A"}</TableCell>
                   <TableCell>
-                    <Badge className={statusColors[app.status as keyof typeof statusColors]}>
+                    <Badge
+                      className={
+                        statusColors[app.status as keyof typeof statusColors]
+                      }
+                    >
                       {app.status}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {format(new Date(app.appliedDate), 'MMM dd, yyyy')}
+                    {format(new Date(app.appliedDate), "MMM dd, yyyy")}
                   </TableCell>
-                  <TableCell>{app.source || 'N/A'}</TableCell>
+                  <TableCell>{app.source || "N/A"}</TableCell>
+                  <TableCell>
+                    {app.resumeUrl ? (
+                      <a
+                        href={app.resumeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline text-sm"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span className="text-gray-400 text-sm">-</span>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex gap-2">
                       {app.jobUrl && (
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => window.open(app.jobUrl, '_blank')}
+                          onClick={() => window.open(app.jobUrl, "_blank")}
                         >
                           <ExternalLink className="h-4 w-4" />
                         </Button>
@@ -214,5 +246,5 @@ export default function ApplicationsTable({ applications }: { applications: any[
         />
       )}
     </>
-  )
+  );
 }
