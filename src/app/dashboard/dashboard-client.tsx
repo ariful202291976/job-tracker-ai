@@ -19,6 +19,12 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Download, FileText, FileSpreadsheet } from "lucide-react";
 import { exportToPDF, exportToExcel } from "@/lib/export";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface DashboardClientProps {
   user: {
@@ -98,61 +104,92 @@ export default function DashboardClient({
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Total Applications */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Applications
-              </CardTitle>
-              <Briefcase className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
-              <p className="text-xs text-muted-foreground">All time</p>
-            </CardContent>
-          </Card>
+<TooltipProvider>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    {/* Total Applications */}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">
+          Total Applications
+        </CardTitle>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Briefcase className="h-4 w-4 text-muted-foreground cursor-help" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>All job applications you've tracked</p>
+          </TooltipContent>
+        </Tooltip>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{stats.total}</div>
+        <p className="text-xs text-muted-foreground">All time</p>
+      </CardContent>
+    </Card>
 
-          {/* Applied */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Applied</CardTitle>
-              <Clock className="h-4 w-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.applied}</div>
-              <p className="text-xs text-muted-foreground">
-                Waiting for response
-              </p>
-            </CardContent>
-          </Card>
+    {/* Applied */}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">Applied</CardTitle>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Clock className="h-4 w-4 text-yellow-600 cursor-help" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Applications waiting for a response</p>
+          </TooltipContent>
+        </Tooltip>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{stats.applied}</div>
+        <p className="text-xs text-muted-foreground">
+          Waiting for response
+        </p>
+      </CardContent>
+    </Card>
 
-          {/* Interviewing */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Interviewing
-              </CardTitle>
-              <Clock className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.interviewing}</div>
-              <p className="text-xs text-muted-foreground">In progress</p>
-            </CardContent>
-          </Card>
+    {/* Interviewing */}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">
+          Interviewing
+        </CardTitle>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Clock className="h-4 w-4 text-blue-600 cursor-help" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Active interviews in progress</p>
+          </TooltipContent>
+        </Tooltip>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{stats.interviewing}</div>
+        <p className="text-xs text-muted-foreground">In progress</p>
+      </CardContent>
+    </Card>
 
-          {/* Offers */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Offers</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.offers}</div>
-              <p className="text-xs text-muted-foreground">Received</p>
-            </CardContent>
-          </Card>
-        </div>
+    {/* Offers */}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">Offers</CardTitle>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <CheckCircle className="h-4 w-4 text-green-600 cursor-help" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Job offers you've received</p>
+          </TooltipContent>
+        </Tooltip>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{stats.offers}</div>
+        <p className="text-xs text-muted-foreground">Received</p>
+      </CardContent>
+    </Card>
+  </div>
+</TooltipProvider>
+       
 
         {/* Applications Section */}
         <Card>
