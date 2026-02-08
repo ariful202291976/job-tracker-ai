@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Pencil, Trash2, ExternalLink, Search } from "lucide-react";
+import { Pencil, Trash2, ExternalLink, Search, Briefcase } from "lucide-react";
 import EditJobDialog from "./edit-job-dialog";
 import DeleteJobDialog from "./delete-job-dialog";
 
@@ -78,15 +78,26 @@ export default function ApplicationsTable({
   }, [applications, searchQuery, statusFilter, sortBy]);
 
   if (applications.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">No applications yet</p>
-        <p className="text-gray-400 text-sm mt-2">
-          Click "Add New Job" to start tracking your applications
-        </p>
+  return (
+    <div className="text-center py-16">
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
+        <Briefcase className="h-8 w-8 text-blue-600 dark:text-blue-400" />
       </div>
-    );
-  }
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        No applications yet
+      </h3>
+      <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+        Start tracking your job search journey by adding your first application.
+        Use the AI tools to optimize your resume and cover letter!
+      </p>
+      <div className="flex gap-3 justify-center">
+        <Button onClick={() => window.location.href = '/dashboard/ai-tools'} variant="outline">
+          Try AI Tools
+        </Button>
+      </div>
+    </div>
+  )
+}
 
   return (
     <>
