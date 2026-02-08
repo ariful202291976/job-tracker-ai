@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
+import confetti from "canvas-confetti";
 
 interface AddJobDialogProps {
   open: boolean;
@@ -114,6 +115,13 @@ export default function AddJobDialog({
 
       toast.success("Application added successfully!", {
         description: `${formData.position} at ${formData.company}`,
+      });
+
+      // Add confetti! 🎉
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
       });
 
       onOpenChange(false);
