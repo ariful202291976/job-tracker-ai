@@ -21,7 +21,7 @@ export default async function DashboardPage() {
     },
   })
 
-  // Calculate stats
+  // Calculate stats 
   const stats = {
     total: applications.length,
     applied: applications.filter(app => app.status === 'APPLIED').length,
