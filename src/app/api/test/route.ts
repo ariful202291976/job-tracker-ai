@@ -15,7 +15,7 @@ export async function GET() {
       users: userCount,
       templates: templateCount,
       timestamp: new Date().toISOString()
-    })
+    }) 
   } catch (error: any) {
     console.error('Test API Error:', error)
     return NextResponse.json({ 
