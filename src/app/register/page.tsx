@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { toast } from "sonner";
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -42,7 +43,10 @@ export default function RegisterPage() {
       }
 
       // Registration successful, redirect to login
-      router.push('/login?registered=true')
+      toast.success('Account created successfully!', {
+  description: 'Please login with your credentials',
+})
+router.push('/login')
     } catch (error) {
       setError('Something went wrong')
       setIsLoading(false)
