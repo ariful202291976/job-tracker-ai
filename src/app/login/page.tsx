@@ -1,73 +1,73 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState, useEffect, Suspense } from 'react'
+import { signIn } from 'next-auth/react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card'
 
-export default function LoginPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+function LoginForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   // Show success message if coming from registration
   useEffect(() => {
-  if (searchParams.get("registered")) {
-    toast.success("Account created successfully!", {
-      description: "Please login with your credentials",
-    });
-  }
-}, [searchParams])
+    if (searchParams.get('registered')) {
+      toast.success('Account created successfully!', {
+        description: 'Please login with your credentials',
+      })
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    e.preventDefault()
+    setError('')
+    setIsLoading(true)
 
     try {
-      const result = await signIn("credentials", {
+      const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
-      });
+      })
 
       if (result?.error) {
-        setError("Invalid email or password");
-        toast.error("Login failed", {
-          description: "Invalid email or password",
-        });
-        setIsLoading(false);
-        return;
+        setError('Invalid email or password')
+        toast.error('Login failed', {
+          description: 'Invalid email or password',
+        })
+        setIsLoading(false)
+        return
       }
 
-      toast.success("Login successful!", {
-        description: "Redirecting to dashboard...",
-      });
+      toast.success('Login successful!', {
+        description: 'Redirecting to dashboard...',
+      })
 
-      router.push("/dashboard");
-      router.refresh();
+      router.push('/dashboard')
+      router.refresh()
     } catch (error) {
-      setError("Something went wrong");
-      toast.error("Something went wrong", {
-        description: "Please try again",
-      });
-      setIsLoading(false);
+      setError('Something went wrong')
+      toast.error('Something went wrong', {
+        description: 'Please try again',
+      })
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -110,11 +110,11 @@ export default function LoginPage() {
               </div>
             )}
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
+            Don&apos;t have an account?{' '}
             <Link href="/register" className="text-blue-600 hover:underline">
               Sign up
             </Link>
@@ -122,5 +122,17 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
+  )
 }
