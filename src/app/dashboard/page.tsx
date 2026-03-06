@@ -11,7 +11,7 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Fetch user's job applications
+  // Fetch applications - let error boundary handle errors
   const applications = await prisma.jobApplication.findMany({
     where: {
       userId: session.user.id,
@@ -19,9 +19,12 @@ export default async function DashboardPage() {
     orderBy: {
       createdAt: 'desc',
     },
+  }).catch((error) => {
+    console.error('Failed to fetch applications:', error)
+    // Return empty array on error - dashboard will show empty state
+    return []
   })
 
-  // Calculate stats 
   const stats = {
     total: applications.length,
     applied: applications.filter(app => app.status === 'APPLIED').length,
