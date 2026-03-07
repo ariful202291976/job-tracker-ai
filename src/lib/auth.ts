@@ -20,35 +20,55 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Invalid credentials')
-        }
+  if (!credentials?.email || !credentials?.password) {
+    throw new Error('Email and password are required')
+  }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        })
-
-        if (!user || !user?.password) {
-          throw new Error('Invalid credentials')
-        }
-
-        const isCorrectPassword = await bcrypt.compare(
-          credentials.password,
-          user.password
-        )
-
-        if (!isCorrectPassword) {
-          throw new Error('Invalid credentials')
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        }
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: credentials.email,
       },
+    })
+
+    if (!user || !user?.password) {
+      throw new Error('No account found with this email')
+    }
+
+    const isCorrectPassword = await bcrypt.compare(
+      credentials.password,
+      user.password
+    )
+
+    if (!isCorrectPassword) {
+      throw new Error('Incorrect password')
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    }
+  } catch (error: any) {
+    console.error('Auth error:', error)
+    
+    // Return specific error messages
+    if (error.message?.includes('timeout')) {
+      throw new Error('Database connection timeout. Please try again.')
+    }
+    
+    if (error.message?.includes('reach database')) {
+      throw new Error('Cannot connect to database. Please try again later.')
+    }
+    
+    // Re-throw original error if it's a user-facing message
+    if (error.message?.includes('account') || error.message?.includes('password')) {
+      throw error
+    }
+    
+    throw new Error('Login failed. Please try again.')
+  }
+},
     }),
   ],
   callbacks: {

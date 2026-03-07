@@ -19,50 +19,54 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
+  e.preventDefault()
+  setError('')
+  setIsLoading(true)
 
-    // Add small delay to show loading state
-    await new Promise(resolve => setTimeout(resolve, 500))
+  // Add small delay to show loading state
+  await new Promise(resolve => setTimeout(resolve, 500))
 
-    try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
-      })
+  try {
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    })
 
-      if (!response.ok) {
-        const data = await response.text()
-        setError(data || 'Registration failed')
-        toast.error('Registration failed', {
-          description: data || 'Please try again',
-        })
-        setIsLoading(false)
-        return
-      }
+    const data = await response.json()
 
-      toast.success('Account created successfully!', {
-        description: 'Please login with your credentials',
-      })
-      
-      router.push('/login?registered=true')
-    } catch (error) {
-      console.error('Registration error:', error)
-      setError('Something went wrong. Please try again.')
-      toast.error('Connection error', {
-        description: 'Please check your internet and try again',
+    if (!response.ok) {
+      // Get error message from backend
+      const errorMessage = data.error || 'Registration failed'
+      setError(errorMessage)
+      toast.error('Registration failed', {
+        description: errorMessage,
       })
       setIsLoading(false)
+      return
     }
+
+    toast.success('Account created successfully!', {
+      description: 'Please login with your credentials',
+    })
+    
+    router.push('/login?registered=true')
+  } catch (error: any) {
+    console.error('Registration error:', error)
+    const errorMessage = 'Network error. Please check your connection and try again.'
+    setError(errorMessage)
+    toast.error('Connection error', {
+      description: errorMessage,
+    })
+    setIsLoading(false)
   }
+}
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">

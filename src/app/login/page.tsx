@@ -34,45 +34,48 @@ function LoginForm() {
   }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
+  e.preventDefault()
+  setError('')
+  setIsLoading(true)
 
-    // Add small delay to show loading state
-    await new Promise(resolve => setTimeout(resolve, 500))
+  // Add small delay to show loading state
+  await new Promise(resolve => setTimeout(resolve, 500))
 
-    try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
+  try {
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    })
 
-      if (result?.error) {
-        setError('Invalid email or password')
-        toast.error('Login failed', {
-          description: 'Invalid email or password',
-        })
-        setIsLoading(false)
-        return
-      }
-
-      toast.success('Login successful!', {
-        description: 'Redirecting to dashboard...',
-      })
-
-      // Keep loading state during redirect
-      router.push('/dashboard')
-      router.refresh()
-    } catch (error) {
-      console.error('Login error:', error)
-      setError('Something went wrong. Please try again.')
-      toast.error('Connection error', {
-        description: 'Please check your internet and try again',
+    if (result?.error) {
+      // Get the specific error message
+      const errorMessage = result.error || 'Invalid email or password'
+      setError(errorMessage)
+      toast.error('Login failed', {
+        description: errorMessage,
       })
       setIsLoading(false)
+      return
     }
+
+    toast.success('Login successful!', {
+      description: 'Redirecting to dashboard...',
+    })
+
+    // Keep loading state during redirect
+    router.push('/dashboard')
+    router.refresh()
+  } catch (error: any) {
+    console.error('Login error:', error)
+    const errorMessage = error.message || 'Network error. Please check your connection.'
+    setError(errorMessage)
+    toast.error('Connection error', {
+      description: errorMessage,
+    })
+    setIsLoading(false)
   }
+}
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
